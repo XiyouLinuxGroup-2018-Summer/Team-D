@@ -17,6 +17,4 @@
 |  赖鑫 | [Github](https://github.com/shengshengxiaowang)  |[CSDN](https://blog.csdn.net/shengshengxiaowang)   |
 |  刘甜 | [Github](http://github.com/ybfqlt)  |  [CSDN](http://blog.csdn.net/tiandc) |
 |  畅柯 | [Github](https://github.com/buger723)  |  [CSDN](https://blog.csdn.net/qq_41681241) |
-|  田正东 |  ... |  ... |
-
-emmmm　田正东的github和博客地址在小组cs中没有，日后更新吧．．．
+|  田正东 | [Github](https://github.com/crdbyb) |  [CSDN](https://blog.csdn.net/weixin_42201172)|

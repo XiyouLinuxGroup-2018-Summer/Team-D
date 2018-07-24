@@ -3,22 +3,21 @@
 #define N 20
 int VerifyStr(char*str);
 int main(){
-	int n,i=0,j=0;
+	int n,i;
 	char str[N];
 	scanf("%d",&n);
-	int a[N];
-	while(i<n){
-		scanf("%s",str);
-		a[i]=VerifyStr(str);
-		i++;
-	}
-	for(j=0;j<i;j++){
-		if(a[j]==0)printf("no\n");
+	while('\n'!=getchar());
+	while((scanf("%s",str))!=EOF){
+		while('\n'!=getchar());
+		i=VerifyStr(str);
+		if(i==0)printf("no\n");
 		else printf("yes\n");
+		n--;
+		if(n==0)break;
 	}
 }
 int VerifyStr(char*str){
-	int i=0,k,m=0,flag=0;
+	int i=0,k,m=0;
 	while(*(str+i)!='\0')i++;
 	k=i/2;
 	while(1){

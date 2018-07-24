@@ -1,18 +1,8 @@
-#include<stdio.h>
-#include<stdlib.h>
-#include<string.h>
+#include <stdio.h>
 int main()
-{
-    int a[30][3];
-    int i=0,j=0;
-    while(scanf("%d %d",&a[i][0],&a[i][1])!=EOF)
-    {
-        a[i][2]+=a[i][0]+a[i][1];
-        i++;
-    }
-   for(j=0;j<i;j++)
-   {
-    printf("%d\n\n",a[j][2]);
-   }
+{  int a,b;
+   while(scanf("%d%d",&a,&b)!=EOF)
+       printf("%d\n\n",a+b);
    return 0;
 }
+

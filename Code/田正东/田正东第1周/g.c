@@ -1,48 +1,37 @@
 #include <stdio.h>
 int main()
 {
-    int n,m,a[1000],i;
+    int n,m,a[100],i,j,flag=0;
 	while(scanf("%d%d",&n,&m)!=EOF)
 	{
-	    if(n<0||n>100)
-		{continue;}
-		else if(n==0&&m==0)
-		{break;}
+	    if(n==0&&m==0)
+			break;
 		else
 		{
-		     for(i=0;i<n;i++)
-			 {
-			     scanf("%d",&a[i]);
+		  for(i=0;i<n;i++)
+		  {
+		    scanf("%d",&a[i]);
+		  }
+		  for(i=0;i<n;i++)
+		  {
+		     if(m<a[i])
+		   	 {
+			    flag=1;
+				j=n;
+				while(j>i)
+				{
+				    a[j]=a[j-1];
+					j--;
+				}
+				a[i]=m;
+				break;
 			 }
-			 for(i=0;i<n;i++)
-			 {
-			     if(a[i]<=m)
-				 {
-				      if(i==(n-1))
-					  {
-					      printf("%d\n",m);
-					  }
-					  else
-					  {
-					      printf("%d ",a[i]);
-					  }
-				 }
-				 if(m<a[i])
-				 {
-				     printf("%d ",m);
-					 for(;i<n;i++)
-					 {
-					     if(i==(n-1))
-						 {
-						     printf("%d\n",a[i]);
-						 }
-						 else
-						 {
-						     printf("%d ",a[i]);
-						 }
-					 }
-				 }
-			 }
+		  }
+		  if(flag!=1)
+            { a[n]=m;}
+		  for(i=0;i<n;i++)
+		  {printf("%d ",a[i]);}
+		  printf("%d\n",a[n]);
 		}
 	}
 	return 0;

@@ -29,11 +29,10 @@ int g_leave_len = MAXROWLEN;  //一行剩下的长度，用于输出对齐
 int g_maxlen;                 //存放某目录下最长文件名的长度
 
 void display_dir(int flag_param,char *path);
-void ls_R(int flag_param,char *path);
 
-void printcolor(char*name,int color)
+void mycolor(char*name,int color)
 {
-        if(color==BLUE){
+    if(color==BLUE){
 	    printf("\033[;34m %-s\033[0m" "",name);
 	}
 	else if(color==GREEN){
@@ -47,7 +46,7 @@ void printcolor(char*name,int color)
 /*错误处理函数，打印出错误所在行数和错误信息*/
 void error(const char *p,int line)
 {
-        fprintf(stderr,"line:%d ",line);
+    fprintf(stderr,"line:%d ",line);
 	perror(p);
 	exit(1);
 }
@@ -55,7 +54,7 @@ void error(const char *p,int line)
 //获取文件属性并打印
 void getprintugrrwx(struct stat a,char *name,int color)
 {
-        char   time[32];
+    char   time[32];
   	struct passwd *psd; //从该结构体中获取文件所有者的用户名
 	struct group  *grp; //从该结构体中获取文件所有者的所属组的组名
 	char   b[11]={"----------"};
@@ -105,19 +104,19 @@ void getprintugrrwx(struct stat a,char *name,int color)
 	psd=getpwuid(a.st_uid);
 	grp=getgrgid(a.st_gid);
 
-        strcpy(time,ctime(&a.st_mtime));
+    strcpy(time,ctime(&a.st_mtime));
 	time[strlen(time)-1]='\0';    //去掉换行符
 
 	//打印所有
 	printf("%s%4ld%-8s%-8s%-6ld%-s",b,a.st_nlink,psd->pw_name,grp->gr_name,a.st_size,time);
-	printcolor(name,color);
+	mycolor(name,color);
 	printf("\n");
 }
 
 //没有用-l时，打印一个文件名并对齐
 void printwithoutl(char *name,int color)
 {
-        int i,len;
+    int i,len;
 	//如果这一行不够打印一个文件名则换行
 	if(g_leave_len < g_maxlen){
 	    printf("\n");
@@ -126,7 +125,7 @@ void printwithoutl(char *name,int color)
 
 	len = strlen(name);
 	len = g_maxlen - len;
-	printcolor(name,color);
+	mycolor(name,color);
 
 	for(i=0;i<len;i++){
 	    printf(" ");
@@ -139,7 +138,7 @@ void printwithoutl(char *name,int color)
 //根据命令行参数和完整路径名显示目标文件
 void display(int flag,char *pathname)
 {
-        int i,j;
+    int i,j;
 	struct stat buf;
 	char   name[NAME_MAX + 1];
 	int color = NORMAL;
@@ -201,7 +200,6 @@ void display(int flag,char *pathname)
 
 void display_dir(int flag_param,char *path)
 {   
-	void ls_R(int flag_param,char *path);
     DIR                   *dir;
 	struct dirent         *ptr;
     int                   count = 0;
@@ -248,6 +246,35 @@ void display_dir(int flag_param,char *path)
 			}
 		}
 
+	if((flag_param & PARAM_R)!=0){
+        struct stat buf ;
+        char test[30];
+        char path_temp[PATH_MAX];
+        int strl;
+		for(i=0;i<count;i++){
+            strcpy(path_temp,file[i]);
+            strcpy(test,file[i]+len);
+            strl=strlen(file[i]);
+            if(test[0]=='.')  
+                continue;
+           //如果目录文件或目录不存在，报错并退出程序
+            if( lstat(path_temp,&buf)== -1 ){
+                if(errno==13)
+                {
+                    printf("没有权限\n");
+                    return ;
+                }
+                error("stat",__LINE__);
+            }   
+            if( S_ISDIR(buf.st_mode) ){
+                path_temp[strl]='/';
+                path_temp[strl+1]='\0';
+                display_dir(flag_param,path_temp);
+            }
+    }
+}
+
+
 	if((flag_param & PARAM_R)!=0)
 		printf("%s:\n",path);
 	for(i = 0; i < count; i++)
@@ -262,39 +289,6 @@ void display_dir(int flag_param,char *path)
 
 }
 
-void ls_R(int flag_param,char *path)
-{
-     DIR  *dir;
-     int  count = 0,strl,i,len = strlen(path);
-	 struct stat buf1 ;
-     char test[20],path_temp[PATH_MAX];
-     char (*file)[PATH_MAX+1]=(char(*)[PATH_MAX+1])malloc(sizeof(char)*count*(PATH_MAX+1));
-
-     if((flag_param & PARAM_R)!=0){
-         for(i=0;i<count;i++){
-             strcpy(path_temp,file[i]);
-             strcpy(test,file[i]+len);
-             strl=strlen(file[i]);
-             if(test[0]=='.')  
-			     continue;
-         //如果目录文件或目录不存在，报错并退出程序
-             if( lstat(path_temp,&buf1)== -1 ){
-                 if(errno==13)
-                 {
-                     printf("没有权限\n");
-                     return ;
-                 }
-                 error("stat",__LINE__);
-             }
-             if( S_ISDIR(buf1.st_mode) ){
-                 path_temp[strl]='/';
-                 path_temp[strl+1]='\0';
-                 display_dir(flag_param,path_temp);
-             }//递归
-         }
-     }
- 
-}
 
 int main(int argc , char ** argv)
 {
@@ -328,7 +322,7 @@ int main(int argc , char ** argv)
             flag_param |= PARAM_R;
             continue;
         }else{
-            printf("没写这个参数呢... -%c\n",param[i]);
+            printf("你输入的这个参数，并没有写嘻嘻嘻...\n");
             exit(1);
         }
     }

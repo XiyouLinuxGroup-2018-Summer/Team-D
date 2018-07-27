@@ -248,17 +248,17 @@ void display_dir(int flag_param,char *path)
 
 	if((flag_param & PARAM_R)!=0){
         struct stat buf ;
-        char test[30];
-        char path_temp[PATH_MAX];
-        int strl;
+        char c[30];
+        char a[PATH_MAX];
+        int b;
 		for(i=0;i<count;i++){
-            strcpy(path_temp,file[i]);
-            strcpy(test,file[i]+len);
-            strl=strlen(file[i]);
-            if(test[0]=='.')  
+            strcpy(a,file[i]);
+            strcpy(c,file[i]+len);
+            b=strlen(file[i]);
+            if(c[0]=='.')  
                 continue;
            //如果目录文件或目录不存在，报错并退出程序
-            if( lstat(path_temp,&buf)== -1 ){
+            if( lstat(a,&buf)== -1 ){
                 if(errno==13)
                 {
                     printf("没有权限\n");
@@ -267,9 +267,9 @@ void display_dir(int flag_param,char *path)
                 error("stat",__LINE__);
             }   
             if( S_ISDIR(buf.st_mode) ){
-                path_temp[strl]='/';
-                path_temp[strl+1]='\0';
-                display_dir(flag_param,path_temp);
+                a[b]='/';
+                a[b+1]='\0';
+                display_dir(flag_param,a);
             }
     }
 }

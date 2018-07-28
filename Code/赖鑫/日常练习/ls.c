@@ -11,8 +11,9 @@
 #include<pwd.h>
 #include<errno.h>
 
+char panduanmulu(char s[500]);
 void myerr(const char *s,int line);
-int myreadir( char *path,char **s,int a);
+int myreadir( char *path,char ***s,int a);
 void paixu(char **s,int l);
 void mingchengshuchu(char **s,int l);
 void quanxian(int s) ;
@@ -30,52 +31,81 @@ void myerr(const char *s,int line)
 }
 
 //获取文件所含目录名称,根据a是否为0判断存储隐含文件
-int myreadir(char *path,char **s,int a)
+int myreadir(char *path,char ***s,int a)
 {
 
     DIR *dir;
     struct dirent *ptr;
     int i=0;
-   
+
     if((dir=opendir(path))==NULL)
     {
-        strcpy(*(s+i),path);return 0;
+        (*s)=(char **)malloc(sizeof(char *) * 2);
+	*(*s+0) = (char *)malloc(sizeof(char)*1000); 
+	strcpy(*(*s+0),path);
+	
+	return 0;
     }
 
-    if((ptr=readdir(dir))==NULL)
-    	myerr("readdir",__LINE__);
+    /*if((ptr=readdir(dir))==NULL)
+    	myerr("readdir",__LINE__);*/
+    
+    int q=0;
+    while((ptr=readdir(dir))!=NULL)
+    {    
+    	if(a==0)
+    	{
+	        if(ptr->d_name[0]=='.')
+		    continue;
+	}
+       		q++;
+        
+    }
+    closedir(dir);
 
+   
+
+    (*s)=(char **)malloc(sizeof(char *) * (q+1));       //分配动态数组
+    for(i=0;i<q+1;i++)  
+      *(*s+i) = (char *)malloc(sizeof(char)*1000); 
+
+    i=0; 
+  
+    dir=opendir(path);
     while((ptr=readdir(dir))!=NULL)
     {
     	if(a==0)
     	{
 	        if(ptr->d_name[0]=='.')
 		    continue;
-	    }
-        strcpy(*(s+i),ptr->d_name);
-        i++;
 	}
+        strcpy( *(*s+i),ptr->d_name);
+        i++;  
+    }
     closedir(dir);
-    return i;
+    return q;
 }
 
 //对文件名进行排序-从小到大
 void paixu(char **s,int l)
 {
     int i,j;
-    char k[1000];
+    char k[1000];  
+	
     for(i=0;i<l-1;i++)
     {
-	    for(j=0;j<l-i-1;j++)
+	
+	for(j=0;j<l-i-1;j++)
     	{
-	        if(strcmp(*(s+j),*(s+j+1))>0)
-	        {
-		        strcpy(k,*(s+j+1));
-		        strcpy(*(s+j+1),*(s+j));
-		        strcpy(*(s+j),k);
+	    if(strcmp(*(s+j),*(s+j+1))>0)
+	    {  
+		
+	        strcpy(k,*(s+j+1));
+	        strcpy(*(s+j+1),*(s+j));
+	        strcpy(*(s+j),k);
             }
-	    }
-	 }
+        }
+    }
 }
 
 
@@ -85,8 +115,11 @@ void mingchengshuchu(char **s,int l)
     int i=0,k=0,a,b;
     while(l--)
     {
-	    a=strlen(*(s+i));
-        b=strlen(*(s+i+1));
+	    a=strlen(*(s+i));   
+	    if(l==0)
+		b=0;
+	    else   
+           	b=strlen(*(s+i+1));
 	    if(k==0 && (k+b+3)<=50)
 	    {
 	        printf("%s",*(s+i));
@@ -196,6 +229,33 @@ void lllll(char s[500] )
     printf(" %s\n",s);
 }
 
+char panduanmulu(char s[500])
+{
+    struct stat buf;
+    if(stat(s,&buf)==-1)
+    {
+        myerr("stat",__LINE__);
+    }
+    if(S_ISLNK(buf.st_mode))
+	return 'l';
+    else if(S_ISREG(buf.st_mode))
+	return '-';
+    else if(S_ISDIR(buf.st_mode))
+	return 'd';
+    else if(S_ISCHR(buf.st_mode))
+	return 'c';
+    else if(S_ISBLK(buf.st_mode))
+	return 'b';
+    else if(S_ISFIFO(buf.st_mode))
+	return 'f';
+    else if(S_ISSOCK(buf.st_mode))
+	return 's';
+}
+
+
+
+
+
 int RRR(char **s,int a,int l,int len ,char mulu[500] )
 {
     char *buf;
@@ -209,9 +269,9 @@ int RRR(char **s,int a,int l,int len ,char mulu[500] )
     
     int i=0,len2=0,x,e;
     char **k;
-    k=(char**)malloc(sizeof(char*)*1000);            //k的动态数组，用于传下一个递归的目录
+   /* k=(char**)malloc(sizeof(char*)*1000);            //k的动态数组，用于传下一个递归的目录
     for(e=0;e<1000;e++)  
-        k[e]=(char*)malloc(sizeof(char)*1000); 
+        k[e]=(char*)malloc(sizeof(char)*1000); */
 
     char *xin;
     xin=(char*)malloc(sizeof(char)*1000);			//xin为新目录              
@@ -263,16 +323,18 @@ int RRR(char **s,int a,int l,int len ,char mulu[500] )
 	return 0;
         }
 
-                                               //得到目录下的目录信息
-	len2=myreadir(s[i],k,a);
+        if(i==len)
+		len2=0;
+	else                               //得到目录下的目录信息
+		len2=myreadir(s[i],&k,a);
 
 	if(len2==0 && i==len)               //目录下已经没有目录了，并且是最后一个文件，返回上一层，释放数组
         {
 
             free(xin);
 	    free(buf);
-	    for(e=0;e<1000;e++)  
-        	free(k[e]);
+	    for(e=0;e<len2;e++)  
+        	free(*(k+e));
 	    return 0;
 	}
 	else if(len2==0 && i!=len)          //目录下没有目录了，但是还有下面的目录
@@ -281,8 +343,11 @@ int RRR(char **s,int a,int l,int len ,char mulu[500] )
 	    if(getcwd(buf2,500)<0)
 	        myerr("getcwd",__LINE__);
             else
-    	        printf("%s/%s :\n",xin,*(s+i));
-	    i++;
+	    {
+		if(panduanmulu(*(s+i))== 'd')
+	    	        printf("%s/%s :\n",xin,*(s+i));
+	    	i++;
+	    }
 	}
 	else if(len2!=0)                    //目录下还有目录，开始递归
 	{
@@ -307,11 +372,7 @@ int main(int argc,char *argv[])
     int l=0,a=0,R=0,i,wen=0,len;
     char mulu[500];
     char **s;int e;
-    s=(char**)malloc(sizeof(char*)*1000);         //分配动态数组
-    for(e=0;e<1000;e++)  
-       s[e]=(char*)malloc(sizeof(char)*1000);                                         
-
-                                                  //解析命令行参数-R,-l,-a等
+                             //解析命令行参数-R,-l,-a等
     for(i=2;i<argc;i++)
     {
 	if(strcmp(argv[i],"-l")==0)
@@ -347,14 +408,15 @@ int main(int argc,char *argv[])
 	if(getcwd(mulu,500)<0)
 	    myerr("getcwd",__LINE__);
     }
-  
-    len=myreadir(mulu,s,a);			//调用myreadir函数获取数组长度和目录内容
+ 
+    len=myreadir(mulu,&s,a);   //printf("%s  00  %d \n",s[0],len);			//调用myreadir函数获取数组长度和目录内容
    
-
-					  //-R做单独处理，因为-R中含有递归，还是要切换目录，所以此时不用做处理
+			  //-R做单独处理，因为-R中含有递归，还是要切换目录，所以此时不用做处理
     if(R!=0)
     {
     	RRR(s,a,l,len,mulu);
+        for(e=0;e<len;e++)  
+            free(*(s+e));
 	return 0;
     }
 
@@ -418,7 +480,8 @@ int main(int argc,char *argv[])
         {
 	    myerr("chdir",__LINE__);
 	    return 0;
-        }
+        } 
+		
     paixu(s,len);
 
     if(len==0)
@@ -426,11 +489,11 @@ int main(int argc,char *argv[])
     	if(l==0)
 	        mingchengshuchu(s,1);
 	else
-	        lllll(s[0]);
+	        lllll(*(s+0));
 	return 0;
     }
 
-           
+       
     /*int v;
     v=strlen(muluming);
     if (muluming[v-1]!='/')
@@ -447,14 +510,14 @@ int main(int argc,char *argv[])
 	for(i=0;i<len;i++)
 	{
 	   
-	     lllll(s[i] );
+	     lllll(*(s+i));
 	}
-    }
-    for(e=0;e<1000;e++)  
-        free(s[e]);
+    } 
+    for(e=0;e<len;e++)  
+        free(*(s+e));
+  
     return 0;
    
 
 }
-
 

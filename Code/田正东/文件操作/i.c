@@ -23,6 +23,7 @@
 #define PARAM_A    1  // -a:显示所有文件
 #define PARAM_L    2  // -l:一行只显示一个文件的详细信息
 #define PARAM_R    4  // -R:连同子目录内容一起列出来
+#define PARAM_I    8  // -i:显示inode
 #define MAXROWLEN  80 // 一行显示的最多字符数
 
 int g_leave_len = MAXROWLEN;  //一行剩下的长度，用于输出对齐
@@ -135,6 +136,26 @@ void printwithoutl(char *name,int color)
 	g_leave_len -= (g_maxlen + 2);
 }
 
+void inode(struct stat buf,char *name,int color)
+{
+	int i,len;
+	if(g_leave_len < g_maxlen+8){
+		printf("\n");
+		g_leave_len=MAXROWLEN;
+	}
+ 
+	printf("%ld ", buf.st_ino);
+	len = strlen(name);
+	len = g_maxlen - len;
+ 
+	mycolor(name,color);
+    for(i=0;i<len;i++)
+		printf(" ");
+	printf(" ");
+	g_leave_len -= (g_maxlen+2+8);
+}
+
+
 //根据命令行参数和完整路径名显示目标文件
 void display(int flag,char *pathname)
 {
@@ -192,6 +213,23 @@ void display(int flag,char *pathname)
         case PARAM_A+PARAM_L+PARAM_R:
             getprintugrrwx(buf,name,color);
             break;
+		case PARAM_I:
+			if(name[0]!='-'){
+			    inode(buf,name,color);
+			}
+			break;
+		case PARAM_A+PARAM_I:
+			inode(buf,name,color);
+			break;
+		case PARAM_L+PARAM_I:
+			if(name[0] != '.'){
+			    printf("%ld",buf.st_ino);
+				getprintugrrwx(buf,name,color);
+			}
+			break;
+		case PARAM_A+PARAM_I+PARAM_L:
+            printf("%ld",buf.st_ino);
+			getprintugrrwx(buf,name,color);
         default:
             break;
 
@@ -327,7 +365,10 @@ int main(int argc , char ** argv)
         }else if(param[i]=='R'){
             flag_param |= PARAM_R;
             continue;
-        }else{
+        }else if(param[i]=='i'){
+		    flag_param |= PARAM_I;
+			continue;
+		}else{
             printf("你输入的这个参数，并没有写嘻嘻嘻...\n");
             exit(1);
         }

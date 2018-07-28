@@ -138,25 +138,20 @@ void printwithoutl(char *name,int color)
 
 void inode(struct stat buf,char *name,int color)
 {
-	char colorname[NAME_MAX + 30];
 	int i,len;
-    //剩余空间不够，就进行换行 
 	if(g_leave_len < g_maxlen+8){
 		printf("\n");
 		g_leave_len=MAXROWLEN;
 	}
  
 	printf("%ld ", buf.st_ino);
-    //名字的长度
 	len = strlen(name);
 	len = g_maxlen - len;
  
 	mycolor(name,color);
-	//输出若个个空格，补够一个单位
     for(i=0;i<len;i++)
 		printf(" ");
 	printf(" ");
-    //更新剩余空间
 	g_leave_len -= (g_maxlen+2+8);
 }
 

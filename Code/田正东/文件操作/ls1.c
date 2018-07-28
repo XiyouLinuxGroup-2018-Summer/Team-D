@@ -204,11 +204,15 @@ void display_dir(int flag_param,char *path)
 	struct dirent         *ptr;
     int                   count = 0;
 	int                   i,j,len = strlen(path);
-	char                  temp[PATH_MAX+1];
+	char                  /*file[256][PATH_MAX+1],*/temp[PATH_MAX+1];
 
 	//获取该目录下文件总数和最长的文件名
 	dir = opendir(path);
 	if(dir == NULL){
+		if(errno==13){
+		    printf("没有权限");
+			return ;
+		}
 	    error("opendir",__LINE__);
 	}
 	while((ptr = readdir(dir)) != NULL){
@@ -219,7 +223,9 @@ void display_dir(int flag_param,char *path)
 	closedir(dir);
 
 	char (*file)[PATH_MAX+1]=(char(*)[PATH_MAX+1])malloc(sizeof(char)*count*(PATH_MAX+1));
-
+    
+//	if(count>256)
+//		error("太多了，再打就崩了\n",__LINE__);
 	//获取该目录下所有的文件名
 	dir = opendir(path);
 	for(i = 0;i < count; i++){
@@ -246,6 +252,16 @@ void display_dir(int flag_param,char *path)
 			}
 		}
 
+	if((flag_param & PARAM_R)!=0)
+        printf("%s:\n",path);
+    for(i = 0; i < count; i++)
+        display(flag_param,file[i]);
+	closedir(dir);
+	if((flag_param & PARAM_L)==0)
+        printf("\n");
+
+
+
 	if((flag_param & PARAM_R)!=0){
         struct stat buf ;
         char c[30];
@@ -270,22 +286,12 @@ void display_dir(int flag_param,char *path)
                 a[b]='/';
                 a[b+1]='\0';
                 display_dir(flag_param,a);
+				
             }
-    }
-}
+        }
+   }
 
-
-	if((flag_param & PARAM_R)!=0)
-		printf("%s:\n",path);
-	for(i = 0; i < count; i++)
-		display(flag_param,file[i]);
-    
-	//如果命令行中没有-l，打印一个换行符
-	if((flag_param & PARAM_L)==0)
-		printf("\n");
-
-    free(file);
-    closedir(dir);
+   free(file);
 
 }
 

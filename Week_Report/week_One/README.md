@@ -44,12 +44,15 @@ _ _ _
  
  ~~最起码,别用gedit了,求你了.这和Win下用notepad++是一样的~~
  
- ++*如果,vim用的不习惯了,可推荐的编辑器有下面几个*++
+ *如果,vim用的不习惯了,可推荐的编辑器有下面几个*
  
+ Visual Studio Code
  ![Visual Studio Code](http://p8pmsq2a4.bkt.clouddn.com/vscode.png)
  
+ atom
  ![atom](http://p8pmsq2a4.bkt.clouddn.com/atom.png)
  
+ sublime text
  ![sublime text](http://p8pmsq2a4.bkt.clouddn.com/st.png)
  
 3. 下面这几句话是别人说的
@@ -115,4 +118,5 @@ int main(void)
  **好好听学长学姐的知道,好好努力,你会有很大收获的.**
  
  ~~是吧, 吕白学长,鸭鸭学姐~~ 
+ 
 ![](http://p8pmsq2a4.bkt.clouddn.com/e0f7919a3c5fff3b5dc0193df8e6c090.jpg)

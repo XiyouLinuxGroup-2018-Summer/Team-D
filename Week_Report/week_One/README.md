@@ -17,3 +17,102 @@
 
 
 2018-07-29 19:12:16 星期日
+
+***
+
+Update: July 29, 2018 8:49 PM By Crow
+
+*首先祝贺大家通过第一周的试炼,但是能不能检查过关不是我说了算,我就是个小卒子*
+
+这一周中看到大家在努力学习,但是学习不仅仅是勤奋就能足够的,还需要和合理的学习方法以及工具辅助.
+
+**同时,大家也存在着一些问题,下面我大概说一下,不一定是在每个人身上都有的.有则改之,无则加勉**
+
+_ _ _
+
+1. 首先是关于Markdown标记语言的使用.这是一种很良好的工具,它可以使你专注于内容,而不是形式.
+
+ 我基本上看了大家写的md文件, 希望大家能够多多使用Markdown语法来进行文件编辑.要不然的话,
+ 
+ 你把后缀名改成.doc效果也是一样的.Markdown的学习推荐一个网站: [Markdown语法说明](https://www.appinn.com/markdown/)
+ 
+ 另外,我补充的部分会使用常见的Markdown语法,希望大家能够认真学习.
+
+2. 之后和我周四说的一样,希望大家能够合理使用Unix/Linux下的工具链,比如说vim + gcc + gdb + man
+
+ 有这么多方便使用的工具弃置不用,岂不是很可惜?
+ 
+ ~~最起码,别用gedit了,求你了.这和Win下用notepad++是一样的~~
+ 
+ ++*如果,vim用的不习惯了,可推荐的编辑器有下面几个*++
+ 
+ ![Visual Studio Code](http://p8pmsq2a4.bkt.clouddn.com/vscode.png)
+ 
+ ![atom](http://p8pmsq2a4.bkt.clouddn.com/atom.png)
+ 
+ ![sublime text](http://p8pmsq2a4.bkt.clouddn.com/st.png)
+ 
+3. 下面这几句话是别人说的
+
+ > 如果你要成为一个好的程序员,需要听我说下面几点:
+ >
+ > > 1. 给自己合理的学习计划, 并且努力完成
+
+ > > 2. 合理安排作息, 尽量保持充沛的精力
+
+ > > 3. 端正态度, 认真对待代码
+
+ > > ~~4. 有自己的计划, 不需要其他人指手画脚, 每天学习已经很累了,还学Java,想死了~~
+
+ > ~~当然,你以后要是志不在此,就当我没说~~
+
+ >    By 沃·兹基·硕德
+
+4. 最后希望大家能规范代码风格,虽然现在有点早,但是起码兹基看的舒服对吧 ~ ~ ~
+
+ ```cpp
+int main(void)
+{
+    if (condition)
+	{
+	    do_something();
+	}
+	else
+	{
+	    do_something();
+	}
+	
+	while (condition)
+	{
+	    loop_something();
+	}
+	return 0;
+}
+```
+
+ 或者,
+
+ ```cpp
+ int main(void)
+{
+    if (condition) {
+	    do_something();
+	} else {
+	    do_something();
+	}
+	
+	while (condition) {
+	    loop_something();
+	}
+	return 0;
+}
+ ```
+ 
+ 亦或者其他任何你自己的方式都可以,之后**规范即可**.
+ 
+ *好了,就说这么多了,我也就是有点想说的, 以后就不多说了*
+ 
+ **好好听学长学姐的知道,好好努力,你会有很大收获的.**
+ 
+ ~~是吧, 吕白学长,鸭鸭学姐~~ 
+![](http://p8pmsq2a4.bkt.clouddn.com/e0f7919a3c5fff3b5dc0193df8e6c090.jpg)

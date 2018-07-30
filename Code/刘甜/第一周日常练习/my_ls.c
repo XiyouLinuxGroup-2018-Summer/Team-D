@@ -176,7 +176,7 @@ void myls_dir(int mode,char *path)
     char dianname[2][50];
     struct dirent *ptr;
     int a=strlen(path);
-    char names[300][PATH_MAX+1];
+    char names[500][PATH_MAX+1];
     char t[PATH_MAX+1];
     char filename[NAME_MAX+1];
     char dirr[100][100];
@@ -424,8 +424,8 @@ int main(int argc,char ** argv)
                 continue;
             else
             {
-                //len=strlen(argv[i]);
-                strcpy(path,argv[i]);
+                len=strlen(argv[i]);
+                strncpy(path,argv[i],len);
                 //printf("%s\n",path);
                 if(stat(path,&buf) == -1)
                 {

@@ -1,0 +1,55 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<unistd.h>
+#include<signal.h>
+#include<time.h>
+#include<syslog.h>
+#include<sys/param.h>
+#include<sys/types.h>
+#include<sys/stat.h>
+int init_daemon(void);
+int main()
+{
+	time_t now;
+	init_daemon();
+	syslog(LOG_USER|LOG_INFO,"测试守护进程!\n");
+	while(1) {
+		sleep(8);
+		time(&now);
+		syslog(LOG_USER|LOG_INFO ,"系统时间：\t%s\t\t\n",ctime(&now));
+	}
+	return 0 ;
+}
+int init_daemon(void){
+	int pid;
+	int i;
+	signal(SIGTTOU , SIG_IGN);
+	signal(SIGTTIN , SIG_IGN);
+	signal(SIGTSTP , SIG_IGN);
+	signal(SIGHUP , SIG_IGN);
+	pid = fork();
+	if(pid > 0){
+		exit(0);//结束父进程，使得子进程成为后台进程
+	}
+	else if(pid < 0){
+		return -1 ;
+	}
+	//建立一个新的进程组,在新的进程组中，子进程成为进程组的收首进程，以使该进程脱离所有终端
+	setsid();
+	pid = fork();
+	if(pid > 0){
+		exit(0);
+	}
+	else if(pid < 0){
+		return 0;
+	}
+	//关闭所有父进程继承的不再需要的文件描述符
+	for(i=0 ;i<NOFILE ; close(i++));
+	//改变工作目录，使得进程不再与任何文件系统联系
+	chdir("/");
+	//将文件屏蔽字符设置为0
+	umask(0);
+	//忽略SIGCHLD
+	signal(SIGCHLD,SIG_IGN);
+	return 0;
+}

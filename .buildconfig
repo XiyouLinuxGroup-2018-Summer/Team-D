@@ -1,0 +1,10 @@
+[default]
+name=Default
+runtime=host
+config-opts=
+run-opts=
+prefix=/home/ltt/.cache/gnome-builder/install/刘甜/host
+app-id=
+postbuild=
+prebuild=
+default=true

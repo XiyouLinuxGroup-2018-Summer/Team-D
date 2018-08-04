@@ -1,0 +1,33 @@
+1. 39
+2.打印8个hello world 创建3个子进程
+3.
+exec 族：
+#include<unistd.h>
+int execve(const char * path ,char * const argv[],char *const envp[]);
+//参数path是路径名，参数argv和参数envp和main函数中的参数对应
+int execv(const char * path , char * const envp[]....);
+//函数通过路径名调用可执行文件作为新进程映像
+int execl(const char * path ,const char * arg ....);
+//函数与execv函数用法类似，传参时每个命令行参数都声明为一个单独的参数
+//使用“...”说明参数不止一个,参数以空指针作为结束,。
+int execle(const char * path ,const char * arg ....);
+//用法和楼上用法类似，只是要显示只是环境变量，位于空指针之后
+int execlp(const char * file , const char *arg...);
+//函数类似于execl,区别和excvo和execv一样
+int execvp(const char * file ,char* const argv[] );
+//函数用法与execv类似，不同的是参数filename。该参数如果包含“/”就相当于路径名，
+//如果不包含，就会在环境变量中寻找
+
+4.
+
+若创建成功：
+
+ID 为父进程ID
+执行if   ID为父进程ID
+执行else   ID为子进程ID
+
+
+解析：没调用fork之前调用getpid函数获取的是父进程ID
+调用函数之后，若子进程创建成功，fork函数返回两个值，当fork函数返回值是
+0时该值是子进程中fork 函数返回的，为其他正值时，那个值是父进程创建的子
+进程的ID值,若进程创建失败fork返回一个值-1

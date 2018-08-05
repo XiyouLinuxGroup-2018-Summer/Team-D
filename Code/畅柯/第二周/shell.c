@@ -9,6 +9,7 @@
 #include<readline/readline.h>
 #include<readline/history.h>
 #include<sys/wait.h>
+#include<pwd.h>
 #define N 50
 #define normal 0 //一般命令
 #define histroy 5
@@ -417,17 +418,19 @@ void printprompt(char *str){
 	}
 
 	else{
-		devide_dir(path);
+		devide_dir(path) ;
 	}
 	
-	
-
-	printf("\33[31m [my_shell@畅柯$$%s] \33[0m",path);
+	strcpy(str ,path) ;
 
 }
 void get_input(char * buf ,char * str){
 
-	
+	uid_t uid;
+	struct passwd  *pwd ;
+	uid = getuid();
+	pwd = getpwuid(uid) ;
+
 	FILE * fp;
 	char command[N];
 	
@@ -436,12 +439,13 @@ void get_input(char * buf ,char * str){
 	signal(SIGSTOP  , SIG_IGN);
 	signal( SIGTSTP ,SIG_IGN);
 
-	
-	strcpy(buf,readline(""));
+	printf("\33[31m [LAPTOP-TOJHUR44@%s$$%s] \33[0m",pwd->pw_name , str);
+
+	strcpy(buf,readline(" "));
+	add_history(buf);
 	*(buf + strlen(buf)) ='\n';
 	*(buf + strlen(buf) + 1) ='\0';
 
-	add_history(buf);
 	fp=fopen( histroyfile,"a+");
 	if(fp == NULL){
 		printf("histroy is not storage!\n");

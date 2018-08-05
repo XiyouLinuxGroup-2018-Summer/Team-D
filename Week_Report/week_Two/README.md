@@ -24,7 +24,9 @@
 
 看了大家的代码, 能发现大家已经在尝试着去改变自己的代码风格了, 但是有的地方还有遗漏的, ~~没有最好的代码风格~~, 只有良好的, 能让人看着舒服的风格, 可以去参照一下:
 > [来自逼乎, 怎么写规范良好的代码](https://www.zhihu.com/question/26721180)
+
 >[良好的编码风格整理](https://www.cnblogs.com/weizhixiang/p/6259089.html)
+
 >[MarkDown 编写规范](https://github.com/fex-team/styleguide/blob/master/markdown.md)
 
 

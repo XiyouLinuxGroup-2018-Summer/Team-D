@@ -1,0 +1,11 @@
+# depslib dependency file v1.0
+1534345718 source:/home/chang_ke/No.4/chat/test/main.c
+	<stdio.h>
+	<stdlib.h>
+
+1534349813 source:/home/chang_ke/No.4/chat/test/test.c
+	<stdio.h>
+	<mysql/mysql.h>
+	<string.h>
+	<string.h>
+

@@ -1,0 +1,148 @@
+#include<stdio.h>
+#include<arpa/inet.h>
+#include<netinet/in.h>
+#include<sys/types.h>
+#include<sys/socket.h>
+#include<mysql/mysql.h>
+#include<errno.h>
+#include<time.h>
+#include<unistd.h>
+#include<string.h>
+#include<stdlib.h>
+#define N 1000
+#define PORT 7230
+#define LN 50
+#define LOG_SUCCESS 1
+#define ONLINE 1
+#define OFF_LINE 0
+#define NOT_ROOT 2
+#define ROOT 3
+
+typedef struct user{
+	
+	int id ;
+	int socket ;
+	char name[LN] ;
+	char pass[LN];
+	char phonenum[LN];//电话号码
+	int isonline ;//是否在线
+	int flag ;//判断是否被禁言 0禁烟 1不禁
+	
+}user_t;
+typedef struct msg{
+	
+	user_t user ;
+	int islogin ;
+
+	int cmd ;//给服务器下命令的
+//	『1.登陆 2.注册 』
+	char msg[N] ;//消息内容
+	char nameto[LN];//发送对象姓名
+	char namefrom[LN];//发送人姓名
+	int isroot;//是否为群主
+	
+}msg_t;
+void print_log();
+void sock_init(int * conn_fd);
+void ny_err(char* string ,int line);
+void log_in(int conn_fd);
+
+void my_err(char * string , int line){//提示错误信息
+
+	printf("%d:",line);
+	perror(string);
+	exit(1);
+}
+void log_in(int conn_fd){
+	
+	msg_t users ;
+
+	bzero(&users , sizeof(msg_t));
+	
+	while(1){
+	
+		printf("\n\t\tInput account name :");
+	
+		scanf("%[^\n]",users.user.name);
+	
+		while('\n'!=getchar()) ;
+		printf("\n\t\tInput account password :");
+		
+		scanf("%[^\n]",users.user.pass);
+		
+		while('\n'!=getchar());
+		
+		users.islogin = 0 ;
+		
+		users.cmd = 1;
+		if(send(conn_fd , &users ,sizeof(users),0) < 0){
+			
+			perror("\n\t\tsend\n");
+		}
+		
+//		read(conn_fd ,&users ,sizeof(users));
+		printf("%d\n",users.islogin);
+			
+		getchar();
+	}
+	
+}
+void sock_init(int * conn_fd){//初始化套接字
+		
+	*conn_fd = socket(AF_INET , SOCK_STREAM , 0);
+	if(*conn_fd < 0){
+
+		my_err("socket",__LINE__ ) ;
+	}
+}
+int main(int argc , char ** argv){
+
+	int conn_fd ;
+
+	char  choice ;
+	struct sockaddr_in serv_addr ;
+	memset(&serv_addr , 0 , sizeof(struct sockaddr_in));
+
+	serv_addr.sin_family = AF_INET ;
+	
+	serv_addr.sin_port = htons(7230);
+
+	inet_aton("127.0.0.1",&(serv_addr.sin_addr));
+
+	
+	sock_init(&conn_fd);
+	//向服务器发送连接请求
+	if(connect(conn_fd , (struct sockaddr *)&serv_addr , sizeof(struct sockaddr_in)) < 0){
+	
+		my_err("connect" , __LINE__);
+	}
+	printf("\n\t\tConnect server succeess!\n");
+	do{
+
+		print_log();
+		
+		choice = getchar();
+
+		while('\n' != getchar());
+		switch(choice){
+		
+			case 'L':
+			case 'l':
+				log_in(conn_fd);
+				break ;
+			case 'R':
+			case 'r':
+			//	re_account(conn_fd);
+				break ;
+		}
+	}while( choice != 'q'&& choice !='Q');
+	system("clear");
+}
+
+void print_log(){//打印初始登陆
+	
+	printf("\n\t\t>>> [L] user login\n");
+	printf("\n\t\t>>> [R] register an accunt\n");
+	printf("\n\t\t>>> [Q] quit\n");
+	printf("\n\t\tInput your choice :");
+}
